@@ -23,7 +23,7 @@ def turn(g, player):
 			options += o.name + ", "
 
 	if options:
-		print "Ok, make your choice. Options are:"
+		print "Make your choice! Options are:"
 		print options
 		choice = raw_input("What'll it be? ")
 		if player:
