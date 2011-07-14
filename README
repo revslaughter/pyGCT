@@ -1,0 +1,10 @@
+
+
+
+
+
+
+
+
+We need to update this so that it uses Python3's set datatype, which would make this so much easier. This may
+necessitate a complete rewrite, but it would make this object so much more efficient.
