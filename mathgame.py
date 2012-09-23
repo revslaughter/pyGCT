@@ -1,30 +1,31 @@
-# A Python combinatorial game class by James Slaughter
-#
-# Combinatorial games can behave like numbers, but their iterative
-# nature makes them extremely difficult to compute by hand.
-#
-# One could also construct a subclass defining the surreal numbers
-# using the ordering methods (<=) in order to perform a member check.
-# The hope is that this can be used as a superclass to make programs
-# such as a nimber calculator, etc. and could even be used to make 
-# on-the-fly calculations of a game in play.
-#
-# For the time being, I can only represent games with a finite birthday.
-# I don't like that, but what with the reality constraints, it would be
-# pretty difficult to hold infinitely large numbers in a computer's memory.
-#
-# Due to the intensively iterative nature of combinitorial games, it is
-# necessary to keep track of how your games are defined, lest you wind up
-# with enormous but simple games. It seems like five sums-of-sums
-# either breaks python or gets incalculably large. This is either due to my poor
-# coding or just the reality of how complicated games can get. I reccomend the
-# simp() method to simplify number, as it produces an alike game.
-#
-# This was composed in Gedit, tested using Python 2.6.4 in Ubuntu 9.10.
-# This is also my way of learning some Python and OOP in general, 
-# please forgive any inefficiencies. Please send comments/criticism to
-# prairie.squidman@gmail.com
+"""
+A Python combinatorial game class by James Slaughter
 
+Combinatorial games can behave like numbers, but their iterative
+nature makes them extremely difficult to compute by hand.
+
+One could also construct a subclass defining the surreal numbers
+using the ordering methods (<=) in order to perform a member check.
+The hope is that this can be used as a superclass to make programs
+such as a nimber calculator, etc. and could even be used to make
+on-the-fly calculations of a game in play.
+
+For the time being, I can only represent games with a finite birthday.
+I don't like that, but what with the reality constraints, it would be
+pretty difficult to hold infinitely large numbers in a computer's memory.
+
+Due to the intensively iterative nature of combinitorial games, it is
+necessary to keep track of how your games are defined, lest you wind up
+with enormous but simple games. It seems like five sums-of-sums
+either breaks python or gets incalculably large. This is either due to my poor
+coding or just the reality of how complicated games can get. I reccomend the
+simp() method to simplify number, as it produces an alike game.
+
+This was composed in Gedit, tested using Python 2.6.4 in Ubuntu 9.10.
+This is also my way of learning some Python and OOP in general,
+please forgive any inefficiencies. Please send comments/criticism to
+prairie.squidman@gmail.com
+"""
 class game:
     """
     Initializes to the 0 = {|} game, add positions using Lput or Rput, with
