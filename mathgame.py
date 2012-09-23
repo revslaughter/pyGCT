@@ -25,33 +25,54 @@
 # please forgive any inefficiencies. Please send comments/criticism to
 # prairie.squidman@gmail.com
 
-class game: 
-# Initializes to the 0 = {|} game, add positions using Lput or Rput, with 
-# Loption and Roption as the left and right sets of options of the game.
-# Options or positions of a game are themselves games.
-# When you call the game class, you may give it a string name, otherwise
-# the name of the game is just 0.
+class game:
+    """
+    Initializes to the 0 = {|} game, add positions using Lput or Rput, with
+    Loption and Roption as the left and right sets of options of the game.
+    Options or positions of a game are themselves games.
+    """
     def __init__(self, nom = "0"):
+        """
+        When you call the game class, you may give it a string name, otherwise
+        the name of the game is just 0.
+        """
         self.L = []
         self.R = []
         self.name = nom
 
     def Lput(self, value): # will currently accept anything, be careful
+        """
+        Lput and Rput methods simply append using the List method
+        to the appropriate list.
+
+        TODO: Make these methods check to see if the thing appended is a game.
+        """
         self.L.append(value)
 
     def Rput(self, value):
+        """
+        Lput and Rput methods simply append using the List method
+        to the appropriate list.
+        
+        TODO: Make these methods check to see if the thing appended is a game.
+        """
         self.R.append(value)
 
     def put(self, a=None, b=None):
+        """
+        Puts the first argument in the left, the second argument in the right.
+        """
         if a:
             self.Lput(a)
         if b:
             self.Rput(b)
 
     def __repr__(self):
-    # Shows the game in {L|R} format, according to the option's names
-    # If you name your games smartly, you should be able to tell what's
-    # inside them. Otherwise, this method may get pretty confusing.
+        """
+        Shows the game in {L|R} format, according to the option's names
+        If you name your games smartly, you should be able to tell what's
+        inside them. Otherwise, this method may get pretty confusing.
+        """
         printed = "{"
         if self.L:
             for g in self.L[:-1]:
@@ -66,11 +87,14 @@ class game:
         return printed
 
     def __le__(self, other):
-    # All comparisons between games are based upon the <= relation.
-    # Rule: For x = { x.L | x.R } and 
-    # y = { y.L | y.R }, x <= y if and only if:
-    # there is no g in x.L such that y <= g, and
-    # there is no h in y.R such that h <= x.
+        """
+        The Less Than or Equal to Relation.
+        All comparisons between games are based upon the <= relation.
+        Rule: For x = { x.L | x.R } and
+        y = { y.L | y.R }, x <= y if and only if:
+        There is no g in x.L such that y <= g, and
+        there is no h in y.R such that h <= x.
+        """
         for g in self.L:
             if other <= g:
                 return False
@@ -80,53 +104,68 @@ class game:
         return True
 
     def __eq__(self, other):
-    # x == y iff x <= y and y <= x. This will help to 'simplify' games
-    # as games' respective option sets need not be equal for two 
-    # games to be alike. ex: 0 == {|} == {-1|1} == {-3, -2 | 4} == {*|*}
-    # In this sense, we are not defining strict equality
-    # here, only 'alikeness' in order to easily form equivalence classes.
-    # One could use List object methods to check true ==.
+        """
+        The Equivalence Relation. In Games that means 'alike'.
+        x == y iff x <= y and y <= x. This will help to 'simplify' games
+        as games' respective option sets need not be equal for two
+        games to be alike. ex: 0 == {|} == {-1|1} == {-3, -2 | 4} == {*|*}
+        In this sense, we are not defining strict equality
+        here, only 'alikeness' in order to easily form equivalence classes.
+        One could use List object methods to check true ==.
+        """
         if ((self <= other) and (other <= self)):
             return True
         else:
             return False
 
     def __ne__(self, other):
-    # Not 'alike'
+        """
+        Implements 'Not Alike'
+        """
         if self == other:
             return False
         else:
             return True
 
     def __lt__(self, other):
-    # Strictly less than
+        """
+        Strictly less than. (Not unalike or great than or equal to)
+        """
         if self <= other and other != self:
             return True
         else:
             return False
 
     def __ge__(self, other):
-    # Greater than or equal to
+        """
+        Greater than or equal to is the opposite of less than or equal to.
+        Hooray for code reuse!
+        """
         if other <= self:
             return True
         else:
             return False
 
     def __gt__(self, other):
-    # Strictly greater than
+        """
+        Strictly greater than
+        """
         if other < self:
             return True
         else:
             return False
 
     def fuzzy(self, other):
-    # Fuzzy relation. This is a relation that games have that
-    # numbers don't. Games that are fuzzy to 0 are 0's 'opposite', as the
-    # first player has a winning strategy. Nimbers of the form n* = {n|n},
-    # n being any (surreal) number, n* || ('fuzzy to') n. It may be shown
-    # that any game that is either greater than, less than, or fuzzy to 0.
-    # We use this property to more easily define the fuzzy method.
-    # To check if a || b, use a.fuzzy(b)
+        """
+        Fuzzy relation. This is a relation that games have that
+        numbers don't. Games that are fuzzy to 0 are 0's 'opposite', as the
+        first player has a winning strategy. Nimbers of the form n* = {n|n},
+        n being any (surreal) number, n* || ('fuzzy to') n. It may be shown
+        that any game that is either greater than, less than, or fuzzy to 0.
+        We use this property to more easily define the fuzzy method.
+
+        To check if a || b, use a.fuzzy(b)
+        """
 
         if (self <= other) or (self >= other):
             return False
@@ -134,14 +173,23 @@ class game:
             return True
     
     def isnumber(self):
+        """
+        This method checks to see if the given game is a surreal number.
+
+        Example: * = {0|0}. *.isnumber() == False
+                 1 = {0|}. 1.isnumber == True
+        """
         for g in self.L:
             for h in self.R:
                 if h <= g:
                     return False
         return True
     def neg(self):
-    # Returns a game negative to the input. 0 is its own negative.
-    # The rule is for G = {L|R}, -G = {-R|-L}
+        """
+        Returns a game negative to the input. 0 is its own negative.
+        The rule is for G = {L|R}, -G = {-R|-L}
+        """
+        
         if self.L != [] or self.R != []:
             n = game("-" + self.name)
             for g in self.L:
@@ -153,10 +201,12 @@ class game:
             return self
 
     def __add__(self, other):
-    # Natural '+' operator overloading for adding ease-of-use.
-    # Rule is G + H = {[G.L + H, G + H.L] | [G.R + H, G + H.R]}
-    # When we reach g + empty, do nothing.
-    # iterations of addition deeper than 4 are very system-taxing.
+        """
+        Natural '+' operator overloading for adding ease-of-use.
+        Rule is G + H = {[G.L + H, G + H.L] | [G.R + H, G + H.R]}
+        When we reach g + empty, do nothing.
+        WARNING: Iterations of addition deeper than 4 are very system-taxing.
+        """
         added = game("(" + self.name + " + " + other.name + ")")
         if self.L:
             for g in self.L:
@@ -173,23 +223,32 @@ class game:
         return added
 
     def __sub__(self, other):
-    # Subtraction is easy when we have additive inverses!
+        """
+        Subtraction is easy when we have additive inverses!
+        """
         return self + other.neg()
 
     def __mul__(self, other):
-    # Multiplying games is extremely complicated by hand.
-    # The rule is X * Y = {((X.L * Y) + (X * Y.L) - (X.L * Y.L)),
-    # ((X.R * Y) + (X * Y.R) - (X.R * Y.R)) | ((X.L * Y) + (X * Y.R) - (X.L * Y.R)),
-    # ((X * Y.L) + (X.R * Y) - (X.R * Y.L))}
-    #
-    # Division is a nightmare - anything that isn't a dyadic/binary rational 
-    # is an infinite limit, and recall that this game class cannot hope to
-    # output games born on day omega as their lists have an infinite number
-    # of members. Not too worried about it - mul isn't well defined for
-    # games, just numbers.
+        """
+        Multiplying games is extremely complicated by hand.
+
+        The rule is
+        X * Y = {((X.L * Y) + (X * Y.L) - (X.L * Y.L)),
+                 ((X.R * Y) + (X * Y.R) - (X.R * Y.R))
+                                |
+                ((X.L * Y) + (X * Y.R) - (X.L * Y.R)),
+                ((X * Y.L) + (X.R * Y) - (X.R * Y.L))}
+
+        Division is a nightmare - anything that isn't a dyadic/binary rational
+        is an infinite limit, and recall that this game class cannot hope to
+        output games born on day omega as their lists have an infinite number
+        of members. Not too worried about it - mul isn't well-defined for
+        games, just numbers.
+        """
         product = game("(" + self.name + " * " + other.name + ")")
-        #def alg(a, b, c, d): return (a * b) + (c * d) - (a * d)
+        
         alg = lambda a, b, c, d: ((a * b) + (c * d) - (a * d))
+
         for g in self.L:
             for h in other.L:
                 product.Lput(alg(g, other, self, h))
@@ -204,11 +263,13 @@ class game:
         return product
 
     def simp(self):
-    # simplifies a game to an alike game with fewer options, useful when 
-    # repeatedly adding or multiplying games. Rule is that any number 
-    # g = {a, b, ... | d, ...} is equivalent to {a | d} if a is the 
-    # greatest option in the left side and d is the least option in the 
-    # right side.
+        """
+        Simplifies a game to an alike game with fewer options, useful when
+        repeatedly adding or multiplying games. Rule is that any number
+        g = {a, b, ... | d, ...} is equivalent to {a | d} if a is the
+        greatest option in the left side and d is the least option in the
+        right side.
+        """
         if self.isnumber():
             self.L.sort()
             self.R.sort()
@@ -222,8 +283,18 @@ class game:
         #if self isn't a number.
             return self
     def winner(self):
-    # Determines who has the advantage to a particular game. Useful if you
-    # have an interesting game constructed and can't tell by looking.
+        """
+        Determines who has the advantage to a particular game. Useful if you
+        have an interesting game constructed and can't tell by looking.
+
+        This is sort of the point of the whole thing. Should probably just
+        return numbers or some other signal beside strings: 0,1,2,3
+
+        That way people can actually use them in their programs and stuff.
+
+        The question of who has the winning strategy all depends on how the
+        game relates to zero.
+        """
         z = game()
         if self < z:
             print "Right has a winning strategy"
@@ -234,11 +305,20 @@ class game:
         else:
             print "First player has a winning strategy"
 
+
+#Useful functions! Not part of the game class. Still, useful
+#functions that you might use in making your games.
 def num(n):
-# makes a surreal integer n
-# This reeeally taxes the system if you try to make numbers of 10 or more.
-# In practice, I've found it easier to use smaller sums, 
-# like (num(5) + num(5)).simp() for 10, if needed. They are alike (try it out!).
+    """
+    Makes a surreal integer n.
+    
+    This reeeally taxes the system if you try to make numbers of 10 or more.
+    In practice, I've found it easier to use smaller sums,
+    like (num(5) + num(5)).simp() for 10, if needed. Maybe that's how to
+    do this, I don't know the best way.
+
+    TODO: Improve on this stuff. So that it's useful.
+    """
     if n < 0:
         return num(n*-1).neg()
     number = game(str(n))
@@ -250,14 +330,18 @@ def num(n):
     return number
 
 def numstar(n):
-# makes a col position n* = {n|n} from number n
+    """
+    Makes a col position n* = {n|n} from number n.
+    """
     numb = game(str(n) + "*")
     numb.Lput(num(n))
     numb.Rput(num(n))
     return numb
 
 def nim(n):
-# makes a nim-heap of blocks n
+    """
+    Makes a nim-heap of blocks n. n needs to be an integer.
+    """
     nimber = game("*" + str(n))
     builder = game()
     for i in range(n):
@@ -267,12 +351,18 @@ def nim(n):
     return nimber
 
 def up(n):
-# makes up and up-games. For instance, up(0) is 0,
-# up(1) is up, up(2) is double-up, etc.
-# Algorithm is super super clunky. Python quits on up(4).
-# Addition is waaay better than multiplication though
-# as addition has only 4 self-calls while multiplication has 12 along with 6
-# addition calls, each of which having 4 self-calls. Awesome.
+    """
+    Makes up and up-games. For instance, up(0) is 0,
+    up(1) is up, up(2) is double-up, etc.
+    Algorithm is super super clunky. Python quits on up(4).
+    Addition is waaay better than multiplication though
+    as addition has only 4 self-calls while multiplication has 12 along with 6
+    addition calls, each of which having 4 self-calls. Awesome.
+
+    What's cool about up is that it's a surreal number that has no analog
+    in the real numbers -- up is the proverbial 'smallest number' that is
+    'right next to' zero! Its equivalent is 1/infinity.
+    """
     if n == 0:
         return num(0)
     if n < 0:
