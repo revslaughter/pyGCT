@@ -298,13 +298,13 @@ class game:
         """
         z = game()
         if self < z:
-            print "Right has a winning strategy"
+            print("Right has a winning strategy")
         elif self == z:
-            print "Second player has a winning strategy"
+            print("Second player has a winning strategy")
         elif self > z:
-            print "Left has a winning strategy"
+            print("Left has a winning strategy")
         else:
-            print "First player has a winning strategy"
+            print("First player has a winning strategy")
 
 
 #Useful functions! Not part of the game class. Still, useful
