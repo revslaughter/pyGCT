@@ -1,8 +1,12 @@
 """
-A Python combinatorial game class by James Slaughter
+A Python combinatorial game class.
+
+Learn about Combinatorial Game Theory:
+    http://www.ics.uci.edu/~eppstein/cgt/
+    http://en.wikipedia.org/wiki/Combinatorial_game_theory
 
 Combinatorial games can behave like numbers, but their iterative
-nature makes them extremely difficult to compute by hand.
+nature makes them extremely difficult to compute.
 
 One could also construct a subclass defining the surreal numbers
 using the ordering methods (<=) in order to perform a member check.
@@ -18,47 +22,71 @@ Due to the intensively iterative nature of combinitorial games, it is
 necessary to keep track of how your games are defined, lest you wind up
 with enormous but simple games. It seems like five sums-of-sums
 either breaks python or gets incalculably large. This is either due to my poor
-coding or just the reality of how complicated games can get. I reccomend the
+coding or just the reality of how complicated games can get. I recommend the
 simp() method to simplify number, as it produces an alike game.
 
-This was composed in Gedit, tested using Python 2.6.4 in Ubuntu 9.10.
-This is also my way of learning some Python and OOP in general,
-please forgive any inefficiencies. Please send comments/criticism to
-prairie.squidman@gmail.com
+This is my way of learning some Python and OOP in general,
+please forgive/fix any inefficiencies. Please send comments/criticism to
+prairie.squidman@gmail.com or improve the code at its home on GitHub:
+
+https://github.com/revslaughter/pyGCT
+
+TODO:
+    -make a function to determine the best move for each player.
+    -elimiate the limitation on num()
+    -optimize the up function so that we can have better than 3up
+    -error check the initial values so that if you enter in a number or
+     a heap[0-9] or a col n* position that the class understands and reacts
+     so that you don't have to input @^*&($ functions every time you make
+     a new game.
+    -see if there's a way to make addition or multiplication, uh, work good.
 """
 class game:
     """
-    Initializes to the 0 = {|} game, add positions using Lput or Rput, with
-    Loption and Roption as the left and right sets of options of the game.
+    Usage: g = game("name", left position, right position)
+ 
+    Sans arguments, initializes to the 0 = {|} game, add other positions using
+    the Lput or Rput methods.
+
     Options or positions of a game are themselves games.
     """
-    def __init__(self, nom = "0"):
+    def __init__(self, nom = "0", leftinit = None, rightinit = None):
         """
-        When you call the game class, you may give it a string name, otherwise
-        the name of the game is just 0.
+        It is ideal to name your game cleverly so that you don't get lost.
+
+        Initializes to the 0 = {|} game, optional arguments allow you to
+        define the position of your game.
         """
         self.L = []
         self.R = []
+
+        if type(leftinit) is game:
+            self.Lput(leftinit)
+
+        if type(rightinit) is game:
+            self.Rput(rightinit)
+
         self.name = nom
 
-    def Lput(self, value): # will currently accept anything, be careful
+    def Lput(self, value):
         """
         Lput and Rput methods simply append using the List method
         to the appropriate list.
-
-        TODO: Make these methods check to see if the thing appended is a game.
         """
-        self.L.append(value)
+        if type(value) is game:
+            self.L.append(value)
+        else:
+            raise Exception("Item is not a game!")
 
     def Rput(self, value):
         """
         Lput and Rput methods simply append using the List method
         to the appropriate list.
-        
-        TODO: Make these methods check to see if the thing appended is a game.
         """
-        self.R.append(value)
-
+        if type(value) is game:
+            self.R.append(value)
+        else:
+            raise Exception("Item is not a game!")
     def put(self, a=None, b=None):
         """
         Puts the first argument in the left, the second argument in the right.
@@ -106,7 +134,7 @@ class game:
 
     def __eq__(self, other):
         """
-        The Equivalence Relation. In Games that means 'alike'.
+        The Equivalence Relation. In CGT that means 'alike'.
         x == y iff x <= y and y <= x. This will help to 'simplify' games
         as games' respective option sets need not be equal for two
         games to be alike. ex: 0 == {|} == {-1|1} == {-3, -2 | 4} == {*|*}
@@ -298,39 +326,37 @@ class game:
         """
         z = game()
         if self < z:
-            print("Right has a winning strategy")
+            return 0
         elif self == z:
-            print("Second player has a winning strategy")
+            return 1
         elif self > z:
-            print("Left has a winning strategy")
+            return 2
         else:
-            print("First player has a winning strategy")
+            return 3
 
-
-#Useful functions! Not part of the game class. Still, useful
-#functions that you might use in making your games.
 def num(n):
     """
     Makes a surreal integer n.
     
-    This reeeally taxes the system if you try to make numbers of 10 or more.
-    In practice, I've found it easier to use smaller sums,
-    like (num(5) + num(5)).simp() for 10, if needed. Maybe that's how to
-    do this, I don't know the best way.
+    Can't make numbers larger than +994, -993 due to maximum recursion depth
+    (default 1000).
+    See Guido's post at:
+    http://neopythonic.blogspot.com/2009/04/tail-recursion-elimination.html
+    
+    For values between the above, this function is nice and fast. (as opposed
+    to before!!)
 
-    TODO: Improve on this stuff. So that it's useful.
+    TODO: Make this based on iteration rather than recursion. How?
     """
     if n < 0:
         return num(n*-1).neg()
     number = game(str(n))
     builder = game()
-    for i in range(n):
-        builder = num(n-1)
     if n != 0:
-        number.Lput(builder)
+        number.Lput(num(n-1))
     return number
 
-def numstar(n):
+def col(n):
     """
     Makes a col position n* = {n|n} from number n.
     """
@@ -343,7 +369,7 @@ def nim(n):
     """
     Makes a nim-heap of blocks n. n needs to be an integer.
     """
-    nimber = game("*" + str(n))
+    nimber = game("heap" + str(n))
     builder = game()
     for i in range(n):
         builder = nim(i)
@@ -373,8 +399,27 @@ def up(n):
     upp.put(num(0), num(1))
     while i < n:
         upp += upp
-        upp.name = (str(i) + ".up")
+        upp.name = (str(i) + "up")
         i += 1
         upp.simp()
-    upp.name = (str(n) + ".up")
+    upp.name = (str(n) + "up")
     return upp
+
+def windecode(num):
+    """
+    Just a function wrapper for a dictionary to return strings
+    that interpret the value of game.winner()
+    """
+    di = {
+        0:"Right has a winning strategy",
+        1:"Second Player has a winning strategy",
+        2:"Left has a winning strategy",
+        3:"First player has a winning strategy"
+        } #winning codes revealed!
+    return di[num]
+
+star = game("*", num(0), num(0))
+up1 = up(1)
+zero = game()
+one = num(1)
+negone = num(-1)
