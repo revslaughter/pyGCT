@@ -231,7 +231,4 @@ DATA
     up1 = {0|1}
     zero = {|}
 
-FILE
-    /home/james/projects/pyCGT/mathgame.py
-
 
