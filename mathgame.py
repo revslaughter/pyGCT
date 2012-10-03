@@ -60,11 +60,8 @@ class game:
         self.L = []
         self.R = []
 
-        if type(leftinit) is game:
-            self.Lput(leftinit)
-
-        if type(rightinit) is game:
-            self.Rput(rightinit)
+        self.Lput(leftinit)
+        self.Rput(rightinit)
 
         self.name = nom
 
@@ -73,20 +70,16 @@ class game:
         Lput and Rput methods simply append using the List method
         to the appropriate list.
         """
-        if type(value) is game:
-            self.L.append(value)
-        else:
-            raise Exception("Item is not a game!")
+        
+        self.L.append(value)
 
     def Rput(self, value):
         """
         Lput and Rput methods simply append using the List method
         to the appropriate list.
         """
-        if type(value) is game:
-            self.R.append(value)
-        else:
-            raise Exception("Item is not a game!")
+        self.R.append(value)
+
     def put(self, a=None, b=None):
         """
         Puts the first argument in the left, the second argument in the right.
